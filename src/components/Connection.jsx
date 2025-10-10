@@ -1,7 +1,7 @@
 import axios from "axios";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { addConnection } from "../redux/connectionSlice";
+import { setConnection } from "../redux/connectionSlice";
 
 const Connections = () => {
   const dispatch = useDispatch()
@@ -10,7 +10,7 @@ const Connections = () => {
      try {
        const res = await axios.get(import.meta.env.VITE_BASE_URL + "/user/connection" , {withCredentials:true})
        if(res.status === 200){
-        dispatch(addConnection(res.data.data))
+        dispatch(setConnection(res.data.data))
        }
      } catch (error) {
        console.log(error)
@@ -18,7 +18,7 @@ const Connections = () => {
   }
   
   useEffect(()=>{
-    if(!connections){
+    if(connections.length <= 0){
       handleConnections()
     }
   },[])
@@ -28,7 +28,7 @@ const Connections = () => {
       {
         connections ? connections.map((item , index) => (
           <div key={index} className="card h-52 card-side bg-base-200 shadow-sm">
-            <figure className="w-1-/2">
+            <figure className="w-1/3">
               <img
                 src={item.photoUrl}
                 alt="photoUrl"

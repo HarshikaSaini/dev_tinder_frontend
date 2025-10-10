@@ -1,9 +1,12 @@
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
+import { removeRequest } from "../redux/requestSlice";
+import { addConnection } from "../redux/connectionSlice";
 
 const Notification = () => {
   const request = useSelector((store) => store.request)
   const dispatch = useDispatch()
+
   const handleRequest = async (status, id) => {
     try {
       const res = await axios.post(
@@ -11,7 +14,16 @@ const Notification = () => {
           import.meta.env.VITE_BASE_URL
         }/request/received/${status}/${id}`,{},{ withCredentials: true }
       );
-      dispatch(removeRequest(id))
+      if(res.status == 200){
+        console.log(res.data.data)
+        if(status == "accepted"){
+          dispatch(addConnection(res.data.data))
+          dispatch(removeRequest(id))
+        }else{
+          dispatch(removeRequest(id))
+        }
+      }
+     
     } catch (error) {
         console.log(error)
     }
@@ -24,12 +36,12 @@ const Notification = () => {
           {request.map((item, index) => (
             <li className="list-row" key={index}>
               <div>
-                <img className="size-10 rounded-box" src={item.fromUserId.photoUrl} />
+                <img className="size-12 rounded-box" src={item.fromUserId.photoUrl} />
               </div>
               <div>
                 <div>{item.fromUserId.firstName + " " + item.fromUserId.lastName}</div>
                 <div className="text-xs uppercase font-semibold opacity-60">
-                  {item.gender}
+                  {item.fromUserId.age},   {item.fromUserId.gender}
                 </div>
               </div>
               <p className="list-col-wrap text-xs">{item.fromUserId.desc}</p>
@@ -49,8 +61,8 @@ const Notification = () => {
           ))}
         </ul>
       ) : (
-        <div className="text-xl text-gray-50 text-center mt-4 ">
-          Nothing to show !
+        <div className="text-md text-gray-50 text-center mt-5 ">
+          No New Request !
         </div>
       )}
     </div>

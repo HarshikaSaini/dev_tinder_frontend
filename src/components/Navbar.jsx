@@ -4,7 +4,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { removeUser } from "../redux/userSlice";
 import { useEffect, useState } from "react";
 import Notification from "./Notification";
-import {addRequest} from "../redux/requestSlice";
+import { setRequest } from "../redux/requestSlice";
 const Navbar = () => {
   const user = useSelector((store) => store.user); // selecting the state from the store
   const request = useSelector((store) => store.request);
@@ -36,7 +36,7 @@ const Navbar = () => {
         { withCredentials: true }
       );
       if (res.status == 200) {
-        dispatch(addRequest(res.data.data));
+        dispatch(setRequest(res.data.data));
       }
     } catch (error) {
       console.log(error);
@@ -44,7 +44,9 @@ const Navbar = () => {
   };
 
   useEffect(() => {
+    if (request.length <= 0) {
       fetchRequests();
+    }
   }, []);
 
   return (
@@ -76,9 +78,9 @@ const Navbar = () => {
               />{" "}
             </svg>
             <span className="badge badge-xs badge-primary indicator-item">
-              {request && request.length}
+              {request.length}
             </span>
-            {show && <Notification  />}
+            {show && <Notification />}
           </div>
           <div className="dropdown dropdown-end">
             <div
