@@ -2,7 +2,7 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 
 // ----------------------
-// 🔹 1️⃣ Create Async Thunks
+// 1 Create Async Thunks
 // ----------------------
 
 // Fetch all connections
@@ -10,43 +10,27 @@ export const fetchConnections = createAsyncThunk(
   "connection/fetchConnections",
   async (_, { rejectWithValue }) => {
     try {
-      const res = await axios.get(`${import.meta.env.VITE_BASE_URL}/connections`, {
+      const res = await axios.get(`${import.meta.env.VITE_BASE_URL}/user/connection`, {
         withCredentials: true,
       });
-      return res.data.data; // ✅ this becomes action.payload in fulfilled
+      return res.data.data; // this becomes action.payload in fulfilled
     } catch (err) {
       return rejectWithValue(err.response?.data || err.message);
     }
   }
 );
 
-// Add a new connection
-export const createConnection = createAsyncThunk(
-  "connection/createConnection",
-  async (newConnection, { rejectWithValue }) => {
-    try {
-      const res = await axios.post(
-        `${import.meta.env.VITE_BASE_URL}/connections`,
-        newConnection,
-        { withCredentials: true }
-      );
-      return res.data.data;
-    } catch (err) {
-      return rejectWithValue(err.response?.data || err.message);
-    }
-  }
-);
 
 // ----------------------
-// 🔹 2️⃣ Slice Definition
+// 2 Slice Definition
 // ----------------------
 
 const connectionSlice = createSlice({
   name: "connection",
   initialState: {
-    data: [],         // ✅ array of connections
-    loading: false,   // ✅ track loading
-    error: null,      // ✅ track errors
+    data: [],         //  array of connections
+    loading: false,   //  track loading
+    error: null,      //  track errors
   },
   reducers: {
     setConnection: (state, action) => {
@@ -61,7 +45,7 @@ const connectionSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      // 🟢 fetchConnections lifecycle
+      // fetchConnections lifecycle
       .addCase(fetchConnections.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -74,20 +58,6 @@ const connectionSlice = createSlice({
         state.loading = false;
         state.error = action.payload;
       })
-
-      // 🟢 createConnection lifecycle
-      .addCase(createConnection.pending, (state) => {
-        state.loading = true;
-        state.error = null;
-      })
-      .addCase(createConnection.fulfilled, (state, action) => {
-        state.loading = false;
-        state.data.push(action.payload);
-      })
-      .addCase(createConnection.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.payload;
-      });
   },
 });
 

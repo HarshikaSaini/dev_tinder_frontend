@@ -1,7 +1,7 @@
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
 import { removeRequest } from "../redux/requestSlice";
-import { addConnection } from "../redux/connectionSlice";
+import { fetchConnections } from "../redux/connectionSlice";
 
 const Notification = () => {
   const request = useSelector((store) => store.request)
@@ -15,15 +15,13 @@ const Notification = () => {
         }/request/received/${status}/${id}`,{},{ withCredentials: true }
       );
       if(res.status == 200){
-        console.log(res.data.data)
         if(status == "accepted"){
-          dispatch(addConnection(res.data.data))
+          dispatch(fetchConnections())
           dispatch(removeRequest(id))
         }else{
           dispatch(removeRequest(id))
         }
       }
-     
     } catch (error) {
         console.log(error)
     }
@@ -41,7 +39,7 @@ const Notification = () => {
               <div>
                 <div>{item.fromUserId.firstName + " " + item.fromUserId.lastName}</div>
                 <div className="text-xs uppercase font-semibold opacity-60">
-                  {item.fromUserId.age},   {item.fromUserId.gender}
+                  {item.fromUserId.age}  {item.fromUserId.gender}
                 </div>
               </div>
               <p className="list-col-wrap text-xs">{item.fromUserId.desc}</p>
