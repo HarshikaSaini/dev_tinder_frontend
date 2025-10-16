@@ -17,16 +17,18 @@ const Feed = () => {
           title and actions parts A card component has a figure, a body part,
           and inside body there are title and actions parts
         </p>
-        <div className="flex flex-row items-center justify-start gap-2 my-4">
-         <div className="badge badge-primary ">Front End</div>
-         <div className="badge badge-primary ">Back End</div>
-         <div className="badge badge-primary ">LLM's</div>
-         <div className="badge badge-primary ">Web Development</div>
-         <div className="badge badge-primary ">Devops</div>
+        <div className="flex flex-row items-center justify-start gap-2 my-4 w-full h-full flex-wrap">
+         <div className="badge badge-primary  px-3 py-4 nowrap">Front End</div>
+         <div className="badge badge-primary  px-3 py-4">Back End</div>
+         <div className="badge badge-primary  px-3 py-4">LLM's</div>
+         <div className="badge badge-primary   px-3 py-4">Web Development</div>
+         <div className="badge badge-primary   px-3 py-4">Devops</div>
+          <div className="badge badge-primary   px-3 py-4">Web Development</div>
+         <div className="badge badge-primary   px-3 py-4">Devops</div>
          </div>
         <div className="card-actions justify-end">
-          <div className="badge badge-outline">Fashion</div>
-          <div className="badge badge-outline">Products</div>
+          <div className="badge badge-outline py-5 px-4">Ignore</div>
+          <div className="badge badge-outline py-5 px-4">Intrested</div>
         </div>
       </div>
     </div>
