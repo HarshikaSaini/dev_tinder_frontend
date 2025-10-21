@@ -5,14 +5,8 @@ export const fetchFeed = createAsyncThunk(
   "feed/fetchFeed",
   async (_, { rejectWithValue }) => {
     try {
-      const resp = await axios.get(
-        `${import.meta.env.VITE_BASE_URL}/user/feed`,
-        {
-          withCredentials: true,
-        }
-      );
-      console.log(resp);
-      return resp.data;
+      const resp = await axios.get(`${import.meta.env.VITE_BASE_URL}/user/feed`,{ withCredentials: true});
+      return resp.data.data;
     } catch (error) {
       return rejectWithValue(err.response?.data || err.message);
     }
@@ -26,7 +20,11 @@ const feedSlice = createSlice({
     loading: false,
     error: null,
   },
-  reducers: {},
+  reducers: {
+    removeFeed:(state,action)=>{
+      state.data = state.data.filter(item => item._id !== action.payload)
+    },
+  },
   extraReducers: (builder) => {
     builder
     .addCase(fetchFeed.pending, (state) => {
@@ -44,4 +42,5 @@ const feedSlice = createSlice({
   },
 });
 
+export const { removeFeed } = feedSlice.actions
 export default feedSlice.reducer
