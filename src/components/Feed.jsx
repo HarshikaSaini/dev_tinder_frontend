@@ -12,7 +12,6 @@ const Feed = () => {
   }, []);
 
   const handleRequest = async(status,id) => {
-    console.log(status,id)
     try {
       const resp = await axios.post(`${import.meta.env.VITE_BASE_URL}/request/${status}/${id}`,{}, {withCredentials: true})
       if(resp.status==200){
@@ -23,7 +22,7 @@ const Feed = () => {
     }
   }
   if (loading) return <p>Loading...</p>;
-  if (error) return <p>You got an error - {error}</p>;
+  if (error) return <p>You got an error - {error.status}, {error.message}</p>;
   return (
     <div className="grid grid-cols-1 gap-4 m-auto max-w-[500px]">
       {feed.map((item) => {
