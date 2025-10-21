@@ -5,10 +5,16 @@ export const fetchFeed = createAsyncThunk(
   "feed/fetchFeed",
   async (_, { rejectWithValue }) => {
     try {
-      const resp = await axios.get(`${import.meta.env.VITE_BASE_URL}/user/feed`,{ withCredentials: true});
+      const resp = await axios.get(
+        `${import.meta.env.VITE_BASE_URL}/user/feed`,
+        { withCredentials: true }
+      );
       return resp.data.data;
     } catch (error) {
-      return rejectWithValue(err.response?.data || err.message);
+      return rejectWithValue({
+        message: error.response?.data?.mess || error.message,
+        status: error.response?.status,
+      });
     }
   }
 );
@@ -21,26 +27,26 @@ const feedSlice = createSlice({
     error: null,
   },
   reducers: {
-    removeFeed:(state,action)=>{
-      state.data = state.data.filter(item => item._id !== action.payload)
+    removeFeed: (state, action) => {
+      state.data = state.data.filter((item) => item._id !== action.payload);
     },
   },
   extraReducers: (builder) => {
     builder
-    .addCase(fetchFeed.pending, (state) => {
-      state.loading = true;
-      state.error = null;
-    })
-    .addCase(fetchFeed.fulfilled, (state,action)=>{
+      .addCase(fetchFeed.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(fetchFeed.fulfilled, (state, action) => {
         state.loading = false;
         state.data = action.payload;
-    })
-     .addCase(fetchFeed.rejected, (state,action)=>{
+      })
+      .addCase(fetchFeed.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
-    })
+      });
   },
 });
 
-export const { removeFeed } = feedSlice.actions
-export default feedSlice.reducer
+export const { removeFeed } = feedSlice.actions;
+export default feedSlice.reducer;
