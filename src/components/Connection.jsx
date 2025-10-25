@@ -1,4 +1,4 @@
-import axios from "axios";
+import { Link } from "react-router-dom";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchConnections } from "../redux/connectionSlice";
@@ -36,7 +36,7 @@ const Connections = () => {
               </h2>
               <p className="h-16 overflow-hidden text-ellipsis">{item.desc}</p>
               <div className="card-actions justify-end">
-                <button className="btn btn-primary">CHAT</button>
+                <Link to="/chat" className="btn btn-primary">CHAT</Link>
               </div>
             </div>
           </div>
