@@ -1,10 +1,11 @@
-import { Link } from "react-router-dom";
+import { Link,useNavigate } from "react-router-dom";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchConnections } from "../redux/connectionSlice";
 
 const Connections = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate()
   const {
     data: connections,
     loading,
@@ -36,9 +37,9 @@ const Connections = () => {
               </h2>
               <p className="h-16 overflow-hidden text-ellipsis">{item.desc}</p>
               <div className="card-actions justify-end">
-                <Link to="/chat" className="btn btn-primary">CHAT</Link>
+                <Link to={`/chat/${item._id}`} className="btn btn-primary">CHAT</Link>
               </div>
-            </div>
+            </div>s
           </div>
         ))
       ) : (

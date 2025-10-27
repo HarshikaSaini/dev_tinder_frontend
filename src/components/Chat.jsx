@@ -1,7 +1,24 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { createSocketConnection } from "../redux/socket";
+import { useParams } from "react-router-dom";
+import { useSelector } from "react-redux";
 
 const Chats = () => {
   const [mess, setMess] = useState("");
+  const {_id} = useParams();
+  const user = useSelector((store) => store.user)
+  const userId = user?.data?._id;
+
+  useEffect(()=>{
+    if(!userId) return 
+    const socket = createSocketConnection()
+    socket.emit("joinchat" , {userId, _id})
+
+    return()=>{
+      socket.disconnect()
+    }
+  },[userId,_id])
+
   return (
     <div className="border-2 rounded-md border-gray-700 h-full w-1/2 m-auto flex flex-col p-2">
       <div className="flex-1">
