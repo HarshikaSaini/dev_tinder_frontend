@@ -8,11 +8,13 @@ const Chats = () => {
   const {_id} = useParams();
   const user = useSelector((store) => store.user)
   const userId = user?.data?._id;
-
+ 
   useEffect(()=>{
-    if(!userId) return 
+    if(!userId){ 
+      return; 
+    }
     const socket = createSocketConnection()
-    socket.emit("joinchat" , {userId, _id})
+    socket.emit("joinchat" , {firstName:user.data.firstName, userId, _id})
 
     return()=>{
       socket.disconnect()
