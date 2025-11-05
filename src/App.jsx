@@ -17,7 +17,7 @@ function App() {
             <Route path="/login" element={<Login />} />
             <Route path="/profile" element={<Profile />} />
             <Route path="/feed" element={<Feed />} />
-            <Route path="/chat/:_id" element={<Chats />}/>
+            <Route path="/chat/:targeted_user_id" element={<Chats />}/>
             <Route path="/connections" element={<Request />} />
           </Route>
         </Routes>

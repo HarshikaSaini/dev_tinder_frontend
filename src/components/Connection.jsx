@@ -5,7 +5,6 @@ import { fetchConnections } from "../redux/connectionSlice";
 
 const Connections = () => {
   const dispatch = useDispatch();
-  const navigate = useNavigate()
   const {
     data: connections,
     loading,
@@ -39,7 +38,7 @@ const Connections = () => {
               <div className="card-actions justify-end">
                 <Link to={`/chat/${item._id}`} className="btn btn-primary">CHAT</Link>
               </div>
-            </div>s
+            </div>
           </div>
         ))
       ) : (
