@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState,useRef } from "react";
 import { createSocketConnection } from "../redux/socket";
 import { useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
@@ -77,10 +77,16 @@ const Chats = () => {
     });
     return time
   }
+const messagesContainerRef = useRef(null);
 
+useEffect(() => {
+  if (messagesContainerRef.current) {
+    messagesContainerRef.current.scrollTop = messagesContainerRef.current.scrollHeight;
+  }
+}, [messList]);
   return (
     <div className="border-2 rounded-md border-gray-700 h-full w-1/2 m-auto flex flex-col p-2">
-      <div className="flex-1 overflow-y-auto mb-5">
+      <div ref={messagesContainerRef} className="flex-1 overflow-y-auto mb-5">
         {messList.length > 0 && messList.map((item,idx) => {
           return (
             <>
@@ -115,7 +121,7 @@ const Chats = () => {
                     {`${item?.firstName}  ${item?.lastName}`}
                     <time className="text-xs opacity-50">{getCUrrentTime(item?.createdAt)}</time>
                   </div>
-                  <div className="chat-bubble">{item?.mess}</div>
+                  <div className="chat-bubble bottom-0">{item?.mess}</div>
                   {/* <div className="chat-footer opacity-50">Seen at 12:46</div> */}
                 </div>
               )}
