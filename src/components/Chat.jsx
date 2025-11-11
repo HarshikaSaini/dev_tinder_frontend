@@ -15,8 +15,10 @@ const Chats = () => {
   const { firstName, lastName, photoUrl, _id } = user?.data || {};
   const socket = createSocketConnection();
   const messagesContainerRef = useRef(null);
+  const [page, setPage] = useState(1);
+  const [hasMore, setHasMore] = useState(true);
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
- 
+
   useEffect(() => {
     if (!_id && !firstName) {
       return;
@@ -24,10 +26,10 @@ const Chats = () => {
     socket.emit("joinchat", { firstName, _id, targeted_user_id });
     socket.on(
       "messRecieved",
-      ({ firstName, lastName, photoUrl, mess, userID, createdAt }) => {
+      ({ firstName,lastName,photoUrl,userID,targetID,mess,createdAt }) => {
         setMessList((prev) => [
           ...prev,
-          { firstName, lastName, photoUrl, mess, userID, createdAt },
+          { firstName,lastName,photoUrl,userID,targetID,mess,createdAt },
         ]);
       }
     );
@@ -36,13 +38,14 @@ const Chats = () => {
     };
   }, [_id, targeted_user_id]);
 
-  const fetchChat = async () => {
+  const fetchChat = async (page) => {
     try {
       const res = await axios.get(
-        `${import.meta.env.VITE_BASE_URL}/chat/${targeted_user_id}`,
+        `${import.meta.env.VITE_BASE_URL}/chat/${targeted_user_id}?page=${page}&limit=20`,
         { withCredentials: true }
       );
-      const messData = res?.data.message.map((msg) => {
+      setHasMore(res.data.hasMore);
+      const messData = res?.data.messages.map((msg) => {
         return {
           firstName: msg.senderId.firstName,
           lastName: msg.senderId.lastName,
@@ -52,7 +55,7 @@ const Chats = () => {
           createdAt: msg.createdAt,
         };
       });
-      setMessList(messData);
+      setMessList((prev) =>[...messData,...prev]);
     } catch (error) {
       console.log("error in fetching chat", error);
     }
@@ -79,7 +82,7 @@ const Chats = () => {
       createdAt: new Date(),
     });
     setMess("");
-    setShowEmojiPicker(false)
+    setShowEmojiPicker(false);
   };
 
   const getCUrrentTime = (currTime) => {
@@ -100,13 +103,21 @@ const Chats = () => {
     }
   }, [messList]);
 
-  const handleChange = (emojiData) =>{
-     setMess((prev)=> prev + emojiData.emoji)
-  }
+  const handleChange = (emojiData) => {
+    setMess((prev) => prev + emojiData.emoji);
+  };
+   const handleScroll = () => {
+    const element = messagesContainerRef.current;
+    if (element.scrollTop === 0 && hasMore) {
+      const nextPage = page + 1;
+      setPage(nextPage);
+      fetchChat(nextPage);
+    }
+  };
 
   return (
     <div className="border-2 rounded-md border-gray-700 h-full w-1/2 m-auto flex flex-col p-2">
-      <div ref={messagesContainerRef} className="flex-1 overflow-y-auto mb-5">
+      <div ref={messagesContainerRef} onScroll={handleScroll} className="flex-1 overflow-y-auto mb-5">
         {messList.length > 0 &&
           messList.map((item, idx) => {
             return (
@@ -128,7 +139,9 @@ const Chats = () => {
                       </time>
                     </div>
                     <div className="chat-bubble flex max-w-[70%] wrap-anywhere text-sm">
-                      {item?.mess}
+                      {
+                        item?.mess
+                      }
                     </div>
                     {/* <div className="chat-footer opacity-50">Delivered</div> */}
                   </div>
@@ -149,7 +162,15 @@ const Chats = () => {
                       </time>
                     </div>
                     <div className="chat-bubble bottom-0 flex max-w-[70%] wrap-anywhere text-sm">
-                      {item?.mess}
+                      {item?.attachmentType === "image" && item?.attachment ? (
+                        <div className="rounded-lg max-w-[200px] max-h-[200px] object-cover">
+                          {item.attachment}
+                          
+                          
+                       </div>
+                      ) : (
+                        item?.mess
+                      )}
                     </div>
                     {/* <div className="chat-footer opacity-50">Seen at 12:46</div> */}
                   </div>
@@ -160,9 +181,19 @@ const Chats = () => {
       </div>
 
       <div className="flex items-center justify-between gap-2 p-2 m-auto rounded-md border-gray-700 border-2 w-[90%] mb-2 relative">
-      {showEmojiPicker && (
-        <div  className="absolute bottom-full z-10 mb-2 w-[88%]"><EmojiPicker height="500px" width="100%" skinTonePickerLocation="false" emojiStyle="google" searchPlaceHolder="Search Emoji" suggestedEmojisMode="recent"  onEmojiClick={handleChange}/></div>
-      )}
+        {showEmojiPicker && (
+          <div className="absolute bottom-full z-10 mb-2 w-[88%]">
+            <EmojiPicker
+              height="500px"
+              width="100%"
+              skinTonePickerLocation="false"
+              emojiStyle="google"
+              searchPlaceHolder="Search Emoji"
+              suggestedEmojisMode="recent"
+              onEmojiClick={handleChange}
+            />
+          </div>
+        )}
         <MdOutlineEmojiEmotions
           size={30}
           className="cursor-pointer text-gray-400 "
@@ -177,8 +208,6 @@ const Chats = () => {
           onKeyDown={handleEnter}
         />
         <div className="flex gap-1">
-          <IoCameraOutline size={20} className="cursor-pointer text-gray-400" />
-          <IoAttachOutline size={20} className="cursor-pointer text-gray-400" />
           <IoSend
             size={20}
             onClick={(e) => sendNewMessage(e)}
