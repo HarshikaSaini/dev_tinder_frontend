@@ -6,3 +6,8 @@
 .fieldset-legend{
     font-size: larger;
 }
+
+.hide-scrollbar {
+  -ms-overflow-style: none !important;  /* for IE, Edge */
+  scrollbar-width: none;     /* for Firefox */
+} 

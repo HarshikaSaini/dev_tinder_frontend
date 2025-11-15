@@ -5,13 +5,14 @@ import { useSelector } from "react-redux";
 import axios from "axios";
 import { MdOutlineEmojiEmotions } from "react-icons/md";
 import EmojiPicker from "emoji-picker-react";
-
-import { IoAttachOutline, IoCameraOutline, IoSend } from "react-icons/io5";
+import "./Style.css";
+import { capitalizeFirst } from "../utils/utls";
+import {IoSend } from "react-icons/io5";
 const Chats = () => {
   const [mess, setMess] = useState("");
   const [messList, setMessList] = useState([]);
   const { targeted_user_id } = useParams();
-  const user = useSelector((store) => store.user);
+  const {data:user} = useSelector((store) => store.user);
   const { firstName, lastName, photoUrl, _id } = user?.data || {};
   const socket = createSocketConnection();
   const messagesContainerRef = useRef(null);
@@ -116,12 +117,12 @@ const Chats = () => {
   };
 
   return (
-    <div className="border-2 rounded-md border-gray-700 h-full w-1/2 m-auto flex flex-col p-2">
-      <div ref={messagesContainerRef} onScroll={handleScroll} className="flex-1 overflow-y-auto mb-5">
+    <div className="rounded-md border-gray-700 h-full w-full flex flex-col p-4 ">
+      <div ref={messagesContainerRef} onScroll={handleScroll} className="flex-1 overflow-y-auto mb-5 hide-scrollbar">
         {messList.length > 0 &&
           messList.map((item, idx) => {
             return (
-              <div key={idx}>
+              <div key={idx} >
                 {item?.userID === _id ? (
                   <div className="chat chat-start">
                     <div className="chat-image avatar">
@@ -133,14 +134,14 @@ const Chats = () => {
                       </div>
                     </div>
                     <div className="chat-header">
-                      {`${item?.firstName}  ${item?.lastName}`}
+                      {`${capitalizeFirst(item?.firstName)}  ${capitalizeFirst(item?.lastName)}`}
                       <time className="text-xs opacity-50">
                         {getCUrrentTime(item?.createdAt)}
                       </time>
                     </div>
                     <div className="chat-bubble flex max-w-[70%] wrap-anywhere text-sm">
                       {
-                        item?.mess
+                        capitalizeFirst(item?.mess)
                       }
                     </div>
                     {/* <div className="chat-footer opacity-50">Delivered</div> */}

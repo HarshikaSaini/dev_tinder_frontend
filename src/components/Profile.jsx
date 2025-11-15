@@ -3,10 +3,10 @@ import { FiEdit } from "react-icons/fi";
 import "./Style.css";
 import { useSelector } from "react-redux";
 import axios from "axios";
+import { capitalizeFirst } from "../utils/utls";
 
 const Profile = () => {
-  const user = useSelector((store) => store.user);
-
+  const {data:user} = useSelector((store) => store.user);
   const [fName, setFName] = useState("");
   const [lName, setlName] = useState("");
   const [age, setage] = useState(18);
@@ -15,7 +15,7 @@ const Profile = () => {
   const [password, setpassword] = useState("");
   const [desc, setdesc] = useState("");
   const [profileUrl, setprofileUrl] = useState("");
-  const [contact, setcontact] = useState(9000000000);
+  const [contact, setcontact] = useState(92838273824);
   const [input, setInput] = useState("");
   const [skills, setskills] = useState([]);
   const [editable, setEditable] = useState(false);
@@ -74,7 +74,7 @@ const Profile = () => {
   };
 
   return (
-    <div className="flex flex-col  gap-1 px-4  rounded  justify-between w-auto sm:w-full bg-base-300 m-auto">
+    <div className="flex flex-col  gap-1 px-4  rounded  justify-between w-auto sm:w-full bg-base-200 m-auto">
       <div className="avatar flex flex-col sm:flex sm:flex-row   align-center  items-center gap-3 p-7">
         <div className="w-24 rounded-full">
           <img src={profileUrl || null} alt="user-img" />
@@ -232,7 +232,7 @@ const Profile = () => {
                       key={index}
                       className="flex items-center gap-1 bg-blue-100 text-blue-700 px-2 py-1 rounded-full text-sm"
                     >
-                      {skill}
+                      {capitalizeFirst(skill)}
                       <button
                         onClick={() => removeSkill(skill)}
                         className="text-blue-500 hover:text-blue-700 text-xs font-bold"

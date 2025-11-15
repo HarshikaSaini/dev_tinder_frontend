@@ -2,7 +2,7 @@ import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
 import { removeRequest } from "../redux/requestSlice";
 import { fetchConnections } from "../redux/connectionSlice";
-
+import { capitalizeFirst } from "../utils/utls";
 const Notification = () => {
   const request = useSelector((store) => store.request)
   const dispatch = useDispatch()
@@ -28,21 +28,20 @@ const Notification = () => {
   };
  
   return (
-    <div className="absolute top-full right-1 mt-2 z-10  min-h-20 bg-base-300 rounded-md shadow shadow-gray-700  w-100 ">
+    <div className="absolute top-full right-[-20px] md:right-1 mt-2 z-10  min-h-20 bg-base-100 rounded-md w-60 sm:w-70 md:w-90 ">
       {request && request.length > 0 ? (
-        <ul className="list  rounded shadow-md">
+        <ul className="list rounded shadow-md p-2">
           {request.map((item, index) => (
-            <li className="list-row" key={index}>
+            <li className="list-row gap-2 items-center hover:bg-base-300 py-2" key={index}>
               <div>
-                <img className="size-12 rounded-box" src={item.fromUserId.photoUrl} />
+                <img className="size-10 md:size-12 rounded-box" src={item.fromUserId.photoUrl} />
               </div>
-              <div>
-                <div>{item.fromUserId.firstName + " " + item.fromUserId.lastName}</div>
-                <div className="text-xs uppercase font-semibold opacity-60">
-                  {item.fromUserId.age}  {item.fromUserId.gender}
+              <div className="text-[10px] md:text-xs">
+                <div >{capitalizeFirst(item.fromUserId.firstName) + " " + capitalizeFirst(item.fromUserId.lastName)}</div>
+                <div className="uppercase font-semibold opacity-60">
+                  {item?.fromUserId.age !== undefined && item?.fromUserId.age + "yr ,"}  {item.fromUserId.gender !== undefined && capitalizeFirst(item.fromUserId.gender)}
                 </div>
               </div>
-              <p className="list-col-wrap text-xs">{item.fromUserId.desc}</p>
               <button
                 className="btn btn-square btn-ghost"
                 onClick={()=>handleRequest("accepted", item._id)}
@@ -59,7 +58,7 @@ const Notification = () => {
           ))}
         </ul>
       ) : (
-        <div className="text-md text-gray-50 text-center mt-5 ">
+        <div className="text-sm md:text-md text-gray-50 text-center mt-7 md:mt-5 ">
           No New Request !
         </div>
       )}

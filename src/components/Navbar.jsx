@@ -1,16 +1,16 @@
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
-import { Link, useNavigate } from "react-router-dom";
-import { removeUser } from "../redux/userSlice";
+import { Link, useNavigate, useLocation } from "react-router-dom";
+import { removeUser,addUser } from "../redux/userSlice";
 import { useEffect, useState } from "react";
 import Notification from "./Notification";
 import { setRequest } from "../redux/requestSlice";
 const Navbar = () => {
-  const user = useSelector((store) => store.user); // selecting the state from the store
+  const {data:user} = useSelector((store) => store.user); 
   const request = useSelector((store) => store.request);
   const dispatch = useDispatch();
   const navigate = useNavigate();
-
+  const location = useLocation();
   const [show, setShow] = useState(false);
 
   const handleLogout = async () => {
@@ -44,19 +44,40 @@ const Navbar = () => {
   };
 
   useEffect(() => {
-    if (request.length <= 0) {
+    if (request.length <= 0  && location.pathname !== "/login" && location.pathname !== "/register" && location.pathname !== "/") {
       fetchRequests();
     }
-  }, []);
+  }, [location.pathname]);
+
+  const fetchProfile = async () => {
+    if (user) return;
+    try {
+      const res = await axios.get(
+        import.meta.env.VITE_BASE_URL + "/profile/view",
+        { withCredentials: true }
+      );
+      dispatch(addUser(res.data));
+    } catch (error) {
+      if (error.status === 401) {
+        navigate("/login");
+      } else console.log(error);
+    }
+  };
+
+ useEffect(() => {
+  if (!user?.data && location.pathname !== "/login" && location.pathname !== "/register" && location.pathname !== "/") {
+    fetchProfile();
+  }
+}, [location.pathname, user]);
 
   return (
     <div className="pr-4 navbar bg-base-300 shadow-sm ">
       <div className="flex-1">
-        <Link to="/" className="btn btn-ghost text-xl">
+        <Link to="/" className="font-extrabold ml-2 text-xl">
           DevTinder
         </Link>
       </div>
-      {user && (
+      {user && user.data ? (
         <div className="flex gap-6 items-center">
           <div
             className="indicator cursor-pointer relative"
@@ -111,6 +132,14 @@ const Navbar = () => {
             </ul>
           </div>
         </div>
+      ) : (
+        <>
+          {location.pathname === "/login" ? (
+            <Link to="/register">Register</Link>
+          ) : (
+            <Link to="/login">Login</Link>
+          )}
+        </>
       )}
     </div>
   );
