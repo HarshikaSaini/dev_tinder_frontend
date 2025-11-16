@@ -74,12 +74,12 @@ const Profile = () => {
   };
 
   return (
-    <div className="flex flex-col  gap-1 px-4  rounded  justify-between w-auto sm:w-full bg-base-200 m-auto">
+    <div className="flex flex-col  gap-1 px-4  rounded  justify-between w-auto sm:w-full bg-base-200 m-auto h-full">
       <div className="avatar flex flex-col sm:flex sm:flex-row   align-center  items-center gap-3 p-7">
         <div className="w-24 rounded-full">
           <img src={profileUrl || null} alt="user-img" />
         </div>
-        <h1 className="text-2xl">{fName + " " + lName}</h1>
+        <h1 className="text-2xl">{capitalizeFirst(fName) + " " + capitalizeFirst(lName)}</h1>
         <button
           className="m-0 sm:ml-auto cursor-pointer rounded-md bg-blue-500 text-white px-4 py-2 flex justify-items-center items-center gap-1"
           onClick={() => setEditable((prev) => !prev)}
@@ -101,7 +101,7 @@ const Profile = () => {
                 className="input"
                 placeholder="Type here"
                 name={fName}
-                value={fName}
+                value={capitalizeFirst(fName)}
                 readOnly={!editable}
                 onChange={(e) => setFName(e.target.value)}
               />
@@ -113,7 +113,7 @@ const Profile = () => {
                 className="input"
                 placeholder="Type here"
                 name={lName}
-                value={lName}
+                value={capitalizeFirst(lName)}
                 readOnly={!editable}
                 onChange={(e) => setlName(e.target.value)}
               />

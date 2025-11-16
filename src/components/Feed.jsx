@@ -1,16 +1,19 @@
-import { useEffect } from "react";
+import { useEffect,useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchFeed, removeFeed } from "../redux/feedSlice";
 import axios from "axios";
 import { capitalizeFirst } from "../utils/utls";
+import "./Style.css";
 
 const Feed = () => {
   const dispatch = useDispatch();
-  const { data: feed, loading, error } = useSelector((store) => store.feed);
-
+  const { data: feed, loading, error, hasMore } = useSelector((store) => store.feed);
+  const [page,setPage] = useState(1)
+  const feedContainerRef = useRef(null)
   useEffect(() => {
-    dispatch(fetchFeed());
-  }, []);
+    dispatch(fetchFeed(page));
+  }, [page]);
+
 
   const handleRequest = async (status, id) => {
     try {
@@ -27,6 +30,14 @@ const Feed = () => {
     }
   };
   
+
+  const handleScroll =()=>{
+    const element = feedContainerRef.current;
+    if(element.scrollTop + element.clientHeight >= element.scrollHeight - 10  && hasMore && !loading){
+      setPage(prev => prev+1)
+    }
+  }
+  console.log(feed)
   if (loading) return <p>Loading...</p>;
   if (error)
     return (
@@ -34,8 +45,9 @@ const Feed = () => {
         You got an error - {error.status}, {error.message}
       </p>
     );
+
   return (
-    <div className="grid grid-cols-1 gap-4 m-auto max-w-[500px] py-3  px-3 md:py-5 lg:py-7">
+    <div ref={feedContainerRef} onScroll={handleScroll} className="grid grid-cols-1 overflow-y-auto h-[90vh] gap-4 m-auto max-w-[500px] py-3  px-3 md:py-5 lg:py-7 hide-scrollbar">
       {feed.length > 0 ? feed.map((item) => {
         return (
           <div
@@ -59,7 +71,7 @@ const Feed = () => {
               <p className="line-clamp-3">{capitalizeFirst(item.desc)}</p>
 
               {item.skills && (
-                <div className="flex sm:flex-col md:flex-row items-center justify-start gap-2 my-2 md:my-4 w-full h-20 flex-wrap">
+                <div className="flex  md:flex-row items-center justify-start gap-2 my-2 md:my-2 lg:my-1 w-full md:h-20 flex-wrap">
                   {item.skills.map((skill) => (
                     <div className="badge badge-primary text-[10px] sm:text-[12px] md:text-[13px] py-[2px] sm:px-1 sm:py-3  md:px-3 md:py-4">
                       {capitalizeFirst(skill)}
