@@ -1,5 +1,9 @@
-import io from "socket.io-client"
+import {io} from "socket.io-client"
 
 export const createSocketConnection = () => {
-return io(import.meta.env.VITE_BASE_URL)
+return io(import.meta.env.VITE_BASE_URL,{
+    withCredentials:true,
+    transports:["websocket"],
+    secure:true
+})
 }
