@@ -6,7 +6,7 @@ import store from "./redux/store";
 import Profile from "./components/Profile";
 import Feed from "./components/Feed";
 import Request from "./components/Connection";
-import Chats from "./components/chat";
+import Chats from "./components/Chat";
 import Register from "./components/Register";
 import Home from "./components/Home";
 import Body from "./Body";
