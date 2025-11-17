@@ -13,7 +13,7 @@ export default defineConfig(({mode}) => {
   base:"/",
   server:{
     proxy:{
-      "/api":{
+      "/":{
         target:env.VITE_BASE_URL,
         changeOrigin:true,
         secure:true
