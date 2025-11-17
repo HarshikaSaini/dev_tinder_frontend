@@ -37,7 +37,7 @@ const Feed = () => {
       setPage(prev => prev+1)
     }
   }
-  console.log(feed)
+
   if (loading) return <p>Loading...</p>;
   if (error)
     return (
