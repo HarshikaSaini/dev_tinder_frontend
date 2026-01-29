@@ -20,7 +20,7 @@ const Login = () => {
         },
         { withCredentials: true }
       );
-      dispatch(addUser(res.data)); //dispatches an action
+      dispatch(addUser(res.data));
       navigate("/feed")
     } catch (error) { 
       setError(error?.response?.data?.mess || "Something went wrong !" )

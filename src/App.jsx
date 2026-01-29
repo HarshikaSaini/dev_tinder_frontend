@@ -12,18 +12,20 @@ import Home from "./components/Home";
 import Body from "./Body";
 import AuthInit from "./utils/Authuser";
 import ProtectedRoute from "./components/ProtectedRoutes";
+import PublicRoute from "./components/PublicRoute";
 
 function App() {
   return (
     <Provider store={store}>
       <BrowserRouter basename="/">
-      <AuthInit />
+        <AuthInit />
         <Routes>
           <Route element={<Body />}>
             <Route path="/" element={<Home />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/register" element={<Register />} />
-
+            <Route element={<PublicRoute />}>
+              <Route path="/login" element={<Login />} />{" "}
+              <Route path="/register" element={<Register />} />{" "}
+            </Route>
             <Route element={<ProtectedRoute />}>
               <Route path="/feed" element={<Feed />} />
               <Route path="/profile" element={<Profile />} />

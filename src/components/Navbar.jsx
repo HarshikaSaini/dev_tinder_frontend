@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 import Notification from "./Notification";
 import { setRequest } from "../redux/requestSlice";
 const Navbar = () => {
-  const {data:user} = useSelector((store) => store.user); 
+  const {data:user, loading} = useSelector((store) => store.user); 
   const request = useSelector((store) => store.request);
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -65,10 +65,10 @@ const Navbar = () => {
   };
 
  useEffect(() => {
-  if (!user?.data && location.pathname !== "/login" && location.pathname !== "/register" && location.pathname !== "/") {
+  if (!loading && !user?.data && location.pathname !== "/login" && location.pathname !== "/register" && location.pathname !== "/") {
     fetchProfile();
   }
-}, [location.pathname, user]);
+}, [location.pathname, user, loading]);
 
   return (
     <div className="pr-4 navbar bg-base-300 shadow-sm ">
